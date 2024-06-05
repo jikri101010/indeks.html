@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Blog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .video-container {
+            margin: 20px 0;
+        }
+        .video-item {
+            margin-bottom: 20px;
+        }
+        .video-item video {
+            width: 100%;
+            max-width: 600px;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Blog</h1>
+    <div>
+        <input type="file" id="videoInput" accept="video/*">
+        <button onclick="addVideo()">Tambah Video</button>
+    </div>
+    <div id="videoList" class="video-container"></div>
+
+    <script>
+        function addVideo() {
+            const videoInput = document.getElementById('videoInput');
+            const file = videoInput.files[0];
+            if (file) {
+                const videoUrl = URL.createObjectURL(file);
+
+                const videoList = document.getElementById('videoList');
+                const videoItem = document.createElement('div');
+                videoItem.classList.add('video-item');
+
+                const videoElement = document.createElement('video');
+                videoElement.controls = true;
+                videoElement.src = videoUrl;
+
+                const controlsDiv = document.createElement('div');
+                controlsDiv.classList.add('controls');
+
+                const downloadButton = document.createElement('a');
+                downloadButton.href = videoUrl;
+                downloadButton.download = file.name;
+                downloadButton.innerText = 'Download Video';
+                downloadButton.style.marginRight = '10px';
+
+                const shareButton = document.createElement('button');
+                shareButton.innerText = 'Bagikan Link';
+                shareButton.onclick = () => {
+                    const dummy = document.createElement('textarea');
+                    document.body.appendChild(dummy);
+                    dummy.value = videoUrl;
+                    dummy.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(dummy);
+                    alert('Link video telah disalin ke clipboard');
+                };
+
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = 'Hapus Video';
+                deleteButton.onclick = () => {
+                    videoList.removeChild(videoItem);
+                };
+
+                controlsDiv.appendChild(downloadButton);
+                controlsDiv.appendChild(shareButton);
+                controlsDiv.appendChild(deleteButton);
+                videoItem.appendChild(videoElement);
+                videoItem.appendChild(controlsDiv);
+                videoList.appendChild(videoItem);
+
+                videoInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
